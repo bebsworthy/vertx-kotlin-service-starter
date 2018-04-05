@@ -22,8 +22,7 @@ var JsonObject = io.vertx.core.json.JsonObject;
 var JSampleService = Java.type('paths.services.sample.SampleService');
 
 /**
- The service interface.
-
+The service interface. 
  @class
 */
 var SampleService = function(j_val) {

@@ -8,7 +8,6 @@ import io.vertx.ext.web.api.contract.openapi3.OpenAPI3RouterFactory
 import io.vertx.kotlin.core.json.json
 import io.vertx.kotlin.core.json.obj
 import io.vertx.kotlin.coroutines.awaitResult
-import io.vertx.servicediscovery.ServiceDiscovery
 import io.vertx.serviceproxy.ServiceProxyBuilder
 import kotlinx.coroutines.experimental.async
 import paths.services.AbstractHttpServiceVerticle
@@ -47,7 +46,6 @@ class RestApiVerticle : AbstractHttpServiceVerticle() {
         }
     }
 
-
     private fun authenticate(context: RoutingContext) {
         logger.info("Authenticating")
 
@@ -84,7 +82,6 @@ class RestApiVerticle : AbstractHttpServiceVerticle() {
                 }
             }
         }
-
     }
 
     /**
@@ -123,5 +120,4 @@ class RestApiVerticle : AbstractHttpServiceVerticle() {
 //            }
 //        }
 //    }
-
 }

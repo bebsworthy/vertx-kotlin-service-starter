@@ -15,7 +15,6 @@ import io.vertx.servicediscovery.types.HttpEndpoint
 import kotlinx.coroutines.experimental.async
 import paths.models.FlowController
 
-
 @Suppress("unused")
 abstract class AbstractHttpServiceVerticle : CoroutineVerticle() {
     private val logger = LoggerFactory.getLogger("AbstractHttpServiceVerticle.FlowVerticle")
@@ -26,7 +25,6 @@ abstract class AbstractHttpServiceVerticle : CoroutineVerticle() {
     }
     private var record: Record? = null
     private var server: HttpServer? = null
-
 
     suspend fun startServer(port: Int, router: Router) {
 
@@ -54,7 +52,6 @@ abstract class AbstractHttpServiceVerticle : CoroutineVerticle() {
             shutdownServer()
         }
     }
-
 
     /**
      * Publish the service record
@@ -90,7 +87,6 @@ abstract class AbstractHttpServiceVerticle : CoroutineVerticle() {
         }
     }
 
-
     //
     // Utilities
 
@@ -107,7 +103,6 @@ abstract class AbstractHttpServiceVerticle : CoroutineVerticle() {
             this.end(io.vertx.core.json.Json.encodePrettily(data))
         }
     }
-
 
     /**
      * Get a service
@@ -128,7 +123,6 @@ abstract class AbstractHttpServiceVerticle : CoroutineVerticle() {
                     val reference = discovery.getReference(record)
                     val client = reference.getAs(HttpClient::class.java)
                     future.complete(client)
-
                 } else {
                     future.fail("The lookup succeeded, but no matching service")
                 }

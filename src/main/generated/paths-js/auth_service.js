@@ -22,8 +22,7 @@ var JsonObject = io.vertx.core.json.JsonObject;
 var JAuthService = Java.type('paths.services.auth.AuthService');
 
 /**
- The service interface.
-
+The service interface. 
  @class
 */
 var AuthService = function(j_val) {

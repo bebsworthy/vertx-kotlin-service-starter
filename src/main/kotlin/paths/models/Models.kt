@@ -1,8 +1,6 @@
 package paths.models
 
-
 import java.time.LocalDateTime
-
 
 data class User(
         val id: Int,

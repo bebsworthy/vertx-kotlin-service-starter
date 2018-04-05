@@ -10,7 +10,6 @@ import paths.services.auth.AuthVerticle
 import paths.services.sample.SampleServiceBusConsumerVerticle
 import paths.services.sample.SampleServiceBusVerticle
 
-
 @Suppress("unused")
 class MainVerticle : AbstractVerticle() {
     private val logger = LoggerFactory.getLogger(this::class.qualifiedName)
@@ -57,7 +56,6 @@ class MainVerticle : AbstractVerticle() {
             if (it.failed()) {
                 System.out.println("Failed to deploy verticle " + name)
                 done.fail(it.cause())
-
             } else {
                 System.out.println("Deployed verticle " + name)
                 done.complete()
@@ -82,5 +80,4 @@ class MainVerticle : AbstractVerticle() {
 
         return done
     }
-
 }

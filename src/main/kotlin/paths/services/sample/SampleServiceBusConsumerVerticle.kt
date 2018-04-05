@@ -6,7 +6,6 @@ import io.vertx.serviceproxy.ServiceProxyBuilder
 import kotlinx.coroutines.experimental.async
 import paths.services.AbstractHttpServiceVerticle
 
-
 /**
  * A verticle that consume a service on the bus
  */
@@ -39,7 +38,6 @@ class SampleServiceBusConsumerVerticle : AbstractHttpServiceVerticle() {
                     // Success, return whatever we received
                     ctx.response().putHeader("Content-Type", "text/plain")
                     ctx.response().end(result)
-
                 } catch (e: Exception) {
 
                     // Return the world DELIAF
@@ -51,11 +49,9 @@ class SampleServiceBusConsumerVerticle : AbstractHttpServiceVerticle() {
                     ctx.response().end("DELIAF")
                 }
             }
-
         })
 
         // Start the server
         startServer(9090, router)
     }
-
 }

@@ -6,7 +6,6 @@ import io.vertx.core.logging.LoggerFactory
 import io.vertx.serviceproxy.ServiceBinder
 import paths.services.AbstractBusServiceVerticle
 
-
 @Suppress("unused")
 class AuthVerticle : AbstractBusServiceVerticle() {
     companion object {
@@ -35,4 +34,3 @@ class AuthVerticle : AbstractBusServiceVerticle() {
         startFuture.complete()
     }
 }
-

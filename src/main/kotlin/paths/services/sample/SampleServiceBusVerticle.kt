@@ -5,7 +5,6 @@ import io.vertx.core.json.JsonObject
 import io.vertx.kotlin.coroutines.CoroutineVerticle
 import io.vertx.serviceproxy.ServiceBinder
 
-
 /**
  * A verticle that register a service on the bus
  */

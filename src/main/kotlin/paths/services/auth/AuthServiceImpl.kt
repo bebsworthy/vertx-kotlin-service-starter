@@ -51,5 +51,3 @@ class AuthServiceImpl(vertx: Vertx, options: AuthServiceOption) : AuthService {
         resultHandler.handle(Future.succeededFuture(token))
     }
 }
-
-

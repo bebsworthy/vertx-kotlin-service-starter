@@ -6,7 +6,6 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 import org.jetbrains.annotations.NotNull;
 
-
 /**
  * The service interface.
  */

@@ -6,7 +6,6 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
 import org.jetbrains.annotations.NotNull;
 
-
 /**
  * The service interface.
  */
@@ -15,5 +14,8 @@ import org.jetbrains.annotations.NotNull;
 public interface AuthService {
 
     // Authenticate a user using a user name and password and return a JWT token
-    void authenticate(@NotNull String login, @NotNull String password, @NotNull Handler<AsyncResult<String>> resultHandler);
+    void authenticate(
+            @NotNull String login,
+            @NotNull String password,
+            @NotNull Handler<AsyncResult<String>> resultHandler);
 }

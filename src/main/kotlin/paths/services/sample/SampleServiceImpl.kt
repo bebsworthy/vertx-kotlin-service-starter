@@ -12,5 +12,4 @@ class SampleServiceImpl : SampleService {
     override fun reverse(text: String, resultHandler: Handler<AsyncResult<String>>) {
         resultHandler.handle(Future.succeededFuture(text.reversed()))
     }
-
 }
