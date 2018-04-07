@@ -1,31 +1,20 @@
-buildscript {
 
-    ext.kotlin_version = '1.2.31'
-    ext.vertx_version = '3.5.1'
-
-
-    repositories {
-        mavenCentral()
-        jcenter()
-    }
-
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "com.github.jengelman.gradle.plugins:shadow:2.0.2"
-        classpath "com.diffplug.spotless:spotless-plugin-gradle:3.10.0"
-    }
+plugins {
+    id "org.jetbrains.kotlin.jvm" version "1.2.31"
+    id "org.jetbrains.kotlin.kapt" version "1.2.31"
+    id "java"
+    id "application"
+    id "com.github.johnrengelman.shadow" version "2.0.3"
+    id "com.diffplug.gradle.spotless" version "3.10.0"
 }
-
-apply plugin: 'kotlin'
-apply plugin: 'java'
-apply plugin: 'application'
-apply plugin: 'com.github.johnrengelman.shadow'
-apply plugin: "com.diffplug.gradle.spotless"
 
 repositories {
     mavenCentral()
     jcenter()
 }
+
+def kotlin_version = '1.2.31'
+def vertx_version = '3.5.1'
 
 version = '0.0.1'
 group = 'paths'
@@ -40,7 +29,7 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
-    compile "io.vertx:vertx-lang-js:$vertx_version"
+    // compile "io.vertx:vertx-lang-js:$vertx_version"  // generate javascript proxy for services
     compile "io.vertx:vertx-lang-kotlin:$vertx_version"
     compile "io.vertx:vertx-lang-kotlin-coroutines:$vertx_version"
 
@@ -53,14 +42,14 @@ dependencies {
     compile "io.vertx:vertx-service-proxy:$vertx_version"
     compile "io.vertx:vertx-shell:$vertx_version"
 
-
-    // kapt "io.vertx:vertx-codegen:$vertx_version:processor"
-    compileOnly "io.vertx:vertx-codegen:$vertx_version"
+    // Annotation processor for Vertx Proxy
+    compile "io.vertx:vertx-codegen:$vertx_version:processor"
+    kapt "io.vertx:vertx-codegen:$vertx_version:processor"
 
     compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.0"
 
     //testCompile "io.vertx:vertx-junit5:$vertx_version"
-    compile "io.vertx:vertx-unit:$vertx_version"
+    //compile "io.vertx:vertx-unit:$vertx_version"
 
 }
 
@@ -75,7 +64,6 @@ kotlin {
         coroutines "enable"
     }
 }
-
 
 // Redeploy watcher.
 run {
@@ -98,41 +86,36 @@ shadowJar {
     }
 }
 
-task annotationProcessing(type: JavaCompile, group: 'build') { // codegen
-    source = sourceSets.main.java
-    source += sourceSets.main.kotlin
-    classpath = configurations.compile + configurations.compileOnly
-    destinationDir = project.file('src/main/generated')
-    options.compilerArgs = [
-            "-proc:only",
-            "-processor", "io.vertx.codegen.CodeGenProcessor",
-            "-Acodegen.output=${project.projectDir}/src/main"
-    ]
+kapt {
+// None of any of this seem to work !
+//    processors="io.vertx.codegen.CodeGenProcessor"
+//    arguments {
+//        arg("codegen.output", "${project.projectDir}/src/generated")
+//        arg("outputDirectory", "${project.projectDir}/src/generated")
+//    }
+//    javacOptions {
+//
+//        option("-proc:only")
+//        option("-processor", "io.vertx.codegen.CodeGenProcessor")
+//        option("-Acodegen.output=${project.projectDir}/src/generated")
+//        option("-AoutputDirectory=${project.projectDir}/src/generated")
+//    }
 }
 
 compileJava {
     targetCompatibility = 1.8
     sourceCompatibility = 1.8
-
-    dependsOn annotationProcessing
 }
 
 sourceSets {
-    main {
-        java {
-            srcDirs += 'src/main/generated'
-        }
-    }
+    main.kotlin.srcDirs += 'src/main'
+    main.java.srcDirs += 'src/main'
+    main.java.srcDirs += 'src/generated'
 }
 
 spotless {
     kotlin {
-        // optionally takes a version
-        ktlint()
-
-        // also supports license headers
-        //licenseHeader '/* Licensed under Apache-2.0 */'	// License header
-        //licenseHeaderFile 'path-to-license-file'		// License header file
+        ktlint() // optionally takes a version
     }
 }
 
