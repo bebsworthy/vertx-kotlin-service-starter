@@ -2,7 +2,7 @@
 # vertx-kotlin-service-starter
 
 This has for objective to be a basic application that explores 
-the capabilities of vert.x & Kotlin to build microservices.
+the capabilities of vert.x & Kotlin to build micro-services.
 
 It does not provide any actual useful functionality :)
 
@@ -11,9 +11,9 @@ It does not provide any actual useful functionality :)
 - Basic vert.x & Kotlin project
 - HTTP verticle
 - API using OpenAPI3 Router Factory
-- Coroutines based verticle example
+- Co-routines based verticle example
 - Bus service verticle
-- Auto-generated proxy for bus services
+- Auto-generated proxy for bus services  !!MAKE SURE YOU USE JDK8 NOT JDK9!!
 
 ## Todo
 
@@ -27,11 +27,7 @@ It does not provide any actual useful functionality :)
 
 ## Issues
 
-- Change monitoring and redeployment in vertx doesn't work well with gradle and cause 
-port already in use exception.
-
-- I can't figure out how to generate the proxy and client class for the service from Kotlin interface so I'm using java interface
-
+- Can't make vertx codegen to save the generated java file with kapt...
 
 
 ## Some useful command to remember
@@ -42,7 +38,7 @@ port already in use exception.
 
 ** How to run this example with auto-recompile
 
-    ./gradlew vertxRun
+    ./gradlew run
 
 ** How to build a "fat jar"
 
@@ -61,4 +57,3 @@ port already in use exception.
 ** Update Kotlin runtime
 
  - change kotlin version in build.gradle
- - run gradlew ?
