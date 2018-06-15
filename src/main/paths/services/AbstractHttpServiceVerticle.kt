@@ -14,15 +14,12 @@ import io.vertx.servicediscovery.Record
 import io.vertx.servicediscovery.ServiceDiscovery
 import io.vertx.servicediscovery.types.HttpEndpoint
 import kotlinx.coroutines.experimental.launch
-import paths.models.FlowController
 
 @Suppress("unused")
 abstract class AbstractHttpServiceVerticle : CoroutineVerticle() {
     companion object {
         private val logger = LoggerFactory.getLogger("AbstractHttpServiceVerticle.FlowVerticle")!!
     }
-
-    private val flowsController = FlowController()
 
     private val discovery: ServiceDiscovery by lazy {
         ServiceDiscovery.create(vertx)

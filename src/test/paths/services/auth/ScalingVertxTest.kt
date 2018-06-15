@@ -73,12 +73,12 @@ class ScalingVertxTest {
      * a list of Future to synchronize them and detect the end of the test
      */
     @Test
-    fun `Authenticate many users`(vertx: Vertx, testContext: VertxTestContext) {
+    fun `Authenticate 1000 users`(vertx: Vertx, testContext: VertxTestContext) {
         val builder = ServiceProxyBuilder(vertx).setAddress(serviceName)
         val authService = builder.build(AuthService::class.java)
 
-        // Generate 100 dummy user
-        var count = 10000
+        // Generate 1000 dummy user
+        var count = 1000
         val users = generateSequence {
             if (count-- > 0)
                 Pair("dora", "dora")

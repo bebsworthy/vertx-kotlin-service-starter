@@ -2,6 +2,7 @@
 plugins {
     id "org.jetbrains.kotlin.jvm" version "1.2.50"
     id "org.jetbrains.kotlin.kapt" version "1.2.50"
+    id "org.jetbrains.kotlin.plugin.jpa" version "1.2.50" // no-arg constructor for @Entity
     id "java"
     id "application"
     id "com.github.johnrengelman.shadow" version "2.0.3"
@@ -17,6 +18,9 @@ repositories {
 def kotlin_version      = "1.2.50"
 def vertx_version       = "3.5.1"
 def junit5_version      = "5.2.0"
+def hibernate_version   = "5.3.1.Final"
+def h2_version          = "1.4.197"
+def querydsl_version    = "4.2.1"
 
 version = '0.0.1'
 group = 'demo'
@@ -30,16 +34,21 @@ dependencies {
 
     def noJRE = {
         exclude group: 'org.jetbrains.kotlin', module : 'kotlin-stdlib-jre7'
-        exclude group: 'org.jetbrains.kotlin', module : 'kotlin-stdlib-jre8' }
+        exclude group: 'org.jetbrains.kotlin', module : 'kotlin-stdlib-jre8'
+    }
 
+    // ----------------
+    // Kotlin
+    // ----------------
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
-    // compile "io.vertx:vertx-lang-js:$vertx_version"  // generate javascript proxy for services
     compile "io.vertx:vertx-lang-kotlin:$vertx_version", noJRE
     compile "io.vertx:vertx-lang-kotlin-coroutines:$vertx_version", noJRE
 
-
+    // ----------------
+    // Vertx
+    // ----------------
     compile "io.vertx:vertx-web:$vertx_version"
     compile "io.vertx:vertx-auth-jwt:$vertx_version"
     compile "io.vertx:vertx-web-api-contract:$vertx_version"
@@ -53,17 +62,42 @@ dependencies {
     compile "io.vertx:vertx-codegen:$vertx_version:processor"
     kapt "io.vertx:vertx-codegen:$vertx_version:processor"
 
+    // ----------------
+    // Dependency Injection
+    // ----------------
+    implementation 'org.kodein.di:kodein-di-generic-jvm:5.0.0'
+    implementation 'org.kodein.di:kodein-di-conf-jvm:5.0.0'
 
+    // ----------------
+    // Hibernate
+    // ----------------
+    compile "org.hibernate:hibernate-core:$hibernate_version"
+    // compile "org.hibernate:hibernate-entitymanager:$hibernate_version"
+    compile "org.hibernate:hibernate-validator:$hibernate_version"
 
-    // Junit 5 testing
+    // Query DSL
+    compile "com.querydsl:querydsl-apt:$querydsl_version"
+    compile "com.querydsl:querydsl-jpa:$querydsl_version"
+
+    kapt "com.querydsl:querydsl-apt:$querydsl_version:jpa"
+    kapt 'org.hibernate.javax.persistence:hibernate-jpa-2.1-api:1.0.0.Final'
+
+    //kapt "com.querydsl:querydsl-jpa:$querydsl_version:processor"
+
+    // H2 embedded database
+    compile "com.h2database:h2:$h2_version"
+
+    // ----------------
+    // JUnit 5
+    // ----------------
     testCompile "io.vertx:vertx-junit5:$vertx_version"
     testCompile "org.junit.jupiter:junit-jupiter-api:$junit5_version"
     testRuntime "org.junit.jupiter:junit-jupiter-engine:$junit5_version"
 
-//    compile('com.example:library:1.0') {
-//
-//
-//    }
+    // ----------------
+    // Logging
+    // ----------------
+    compile "org.slf4j:slf4j-log4j12:1.7.25"
 }
 
 compileKotlin {

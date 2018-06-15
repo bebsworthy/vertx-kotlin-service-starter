@@ -1,29 +1,29 @@
 package paths.models
 
-import java.time.LocalDateTime
 
+import org.hibernate.annotations.GenericGenerator
+import javax.persistence.*
+
+@Entity
+@Table( name = "USERS" )
 data class User(
-        val id: Int,
+        @Column(nullable = false)
         val name: String,
-        val password: String
-)
 
-data class UserSummary(
-        val id: Int,
-        val name: String
-)
+        @Id
+        @GeneratedValue(generator="increment")
+        @GenericGenerator(name="increment", strategy = "increment")
+        val id: Long = 0
+) {
 
-data class Metadata(
-        val creation_date: LocalDateTime,
-        val created_by: UserSummary,
-        val modification_date: LocalDateTime,
-        val modified_by: UserSummary,
-        val owner: UserSummary
-)
+    @Column(nullable = false)
+    val password: String = ""
+}
 
-data class Flow(
-        val metadata: Metadata,
-        val id: Int,
-        val title: String,
-        val media: String
-)
+//data class Metadata(
+//        val creation_date: LocalDateTime,
+//        val created_by: UserSummary,
+//        val modification_date: LocalDateTime,
+//        val modified_by: UserSummary,
+//        val owner: UserSummary
+//)
