@@ -28,12 +28,17 @@ def config = "src/main/resources/application-conf.json"
 
 dependencies {
 
+    def noJRE = {
+        exclude group: 'org.jetbrains.kotlin', module : 'kotlin-stdlib-jre7'
+        exclude group: 'org.jetbrains.kotlin', module : 'kotlin-stdlib-jre8' }
+
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
     // compile "io.vertx:vertx-lang-js:$vertx_version"  // generate javascript proxy for services
-    compile "io.vertx:vertx-lang-kotlin:$vertx_version"
-    compile "io.vertx:vertx-lang-kotlin-coroutines:$vertx_version"
+    compile "io.vertx:vertx-lang-kotlin:$vertx_version", noJRE
+    compile "io.vertx:vertx-lang-kotlin-coroutines:$vertx_version", noJRE
+
 
     compile "io.vertx:vertx-web:$vertx_version"
     compile "io.vertx:vertx-auth-jwt:$vertx_version"
@@ -48,12 +53,17 @@ dependencies {
     compile "io.vertx:vertx-codegen:$vertx_version:processor"
     kapt "io.vertx:vertx-codegen:$vertx_version:processor"
 
-    compile "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.0"
+
 
     // Junit 5 testing
     testCompile "io.vertx:vertx-junit5:$vertx_version"
     testCompile "org.junit.jupiter:junit-jupiter-api:$junit5_version"
     testRuntime "org.junit.jupiter:junit-jupiter-engine:$junit5_version"
+
+//    compile('com.example:library:1.0') {
+//
+//
+//    }
 }
 
 compileKotlin {
@@ -93,10 +103,6 @@ shadowJar {
     mergeServiceFiles {
         include 'META-INF/services/io.vertx.core.spi.VerticleFactory'
     }
-}
-
-kapt {
-
 }
 
 compileJava {

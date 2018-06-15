@@ -8,8 +8,6 @@ import io.vertx.ext.web.RoutingContext
 import io.vertx.ext.web.api.RequestParameters
 import io.vertx.ext.web.api.contract.openapi3.OpenAPI3RouterFactory
 import io.vertx.ext.web.handler.CorsHandler
-import io.vertx.kotlin.core.json.json
-import io.vertx.kotlin.core.json.obj
 import io.vertx.kotlin.coroutines.awaitResult
 import io.vertx.kotlin.coroutines.dispatcher
 import io.vertx.serviceproxy.ServiceProxyBuilder
@@ -108,13 +106,13 @@ class RestApiVerticle : AbstractHttpServiceVerticle() {
         //  (Because I haven't figured that part out yet)
 
         logger.info("Calling authentication service for '$username'")
-        service.authenticate(username, password) {
+        service.authenticate(username, password, Handler {
             when {
                 it.succeeded() -> {
                     logger.info("Successful authentication for '$username'")
                     context.response()
                             .setStatusCode(200)
-                            .endWithJson(json { obj("token" to it.result()) })
+                            .endWithJson(it.result())
                 }
                 else -> {
                     logger.error("Authentication failure for '$username'", it.cause())
@@ -124,7 +122,7 @@ class RestApiVerticle : AbstractHttpServiceVerticle() {
                             .end("Authentication failed")
                 }
             }
-        }
+        })
     }
 
     /**

@@ -85,7 +85,7 @@ class SampleAsyncServiceImpl(val vertx: Vertx) : SampleAsyncService {
                 println("levelTwo loop $i")
                 i--
                 try {
-                    val reply = awaitResult<String> { f ->
+                    val reply = awaitResult<JsonObject> { f ->
                         service.authenticate("dora", "dora", f)
                     }
                     res.put("token$i", reply)

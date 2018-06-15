@@ -4,6 +4,7 @@ import io.vertx.core.AsyncResult
 import io.vertx.core.Future
 import io.vertx.core.Handler
 import io.vertx.core.Vertx
+import io.vertx.core.json.JsonObject
 import io.vertx.core.logging.LoggerFactory
 import io.vertx.ext.auth.jwt.JWTAuth
 import io.vertx.ext.auth.jwt.JWTAuthOptions
@@ -20,10 +21,14 @@ class AuthServiceImpl(vertx: Vertx, options: AuthServiceOption) : AuthService {
             expiresInMinutes = 60
     )
 
+    // A most probably unique identifier for this instance
+    private val instanceId = (Math.random() * 10000000000000000).toLong()
+
     data class AuthServiceOption(val keystore: String,
                                  val password: String)
 
     init {
+
         logger.info("Loading keystore at " + options.keystore)
 
         // Set up the JWT options
@@ -37,20 +42,23 @@ class AuthServiceImpl(vertx: Vertx, options: AuthServiceOption) : AuthService {
         jwt = JWTAuth.create(vertx, jwtAuthOptions)
     }
 
-    override fun authenticate(@NotNull username: String, @NotNull password: String, @NotNull resultHandler: Handler<AsyncResult<String>>) {
+    override fun authenticate(@NotNull username: String, @NotNull password: String, @NotNull resultHandler: Handler<AsyncResult<JsonObject>>) {
 
-        logger.info("Authenticate request for '$username'")
+        logger.info("[$instanceId] Authenticate request for '$username'")
 
         // Dummy validation method
         if (password != username) {
             // Login failed... woohoo
             resultHandler.handle(Future.failedFuture("Invalid credentials"))
-            logger.info("Authentication failure for '$username'")
+            logger.info("[$instanceId] Authentication failure for '$username'")
             return
         }
 
         // User has been validated: Generate a token containing the username
         val token = jwt.generateToken(json { obj("username" to username) }, jwtOptions)
-        resultHandler.handle(Future.succeededFuture(token))
+        resultHandler.handle(Future.succeededFuture(
+                json {
+                    obj(token to token)
+                }))
     }
 }
