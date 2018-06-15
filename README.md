@@ -1,7 +1,7 @@
 
 # vertx  kotlin service starter project
 
-This is a basic starter project for kotlin & vertx.
+This is a basic starter project / demo for kotlin & vertx.
 
 It does not provide any actual useful functionality :)
 
@@ -15,6 +15,7 @@ It does not provide any actual useful functionality :)
 - Bus service verticles
 - Auto-generated proxy for bus services using kotlin interface !!MAKE SURE YOU USE JDK8 NOT JDK9!!
 - Sample testing with JUnit5 & Vertx
+- Scaling ( See test in ScalingVertxTest.kt )
 
 ## Todo
 
@@ -23,11 +24,6 @@ It does not provide any actual useful functionality :)
 - Monitoring
 - Scaling
 - Deployment configuration
-
-
-## Issues & Help required
-
-- Can't make vertx codegen to save the generated java file with kapt.
 
 
 ## Some useful command to remember
@@ -44,7 +40,7 @@ gradle wrapper
     
 ### How to run the test
 ```
-    ./gradlew test
+    ./gradlew check
 ```
 ### How to build a "fat jar"
 ```
@@ -53,7 +49,7 @@ gradle wrapper
 
 ### How to run the fat jar
 ```
-    java -jar build/libs/simple-project-fat.jar,
+    java -jar build/libs/Paths-0.0.1.jar
 ```
 
 ** How to kill all running vertx instances when gradle barf and doesn't release them
