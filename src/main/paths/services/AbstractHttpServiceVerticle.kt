@@ -9,18 +9,22 @@ import io.vertx.core.logging.LoggerFactory
 import io.vertx.ext.web.Router
 import io.vertx.kotlin.coroutines.CoroutineVerticle
 import io.vertx.kotlin.coroutines.awaitResult
+import io.vertx.kotlin.coroutines.dispatcher
 import io.vertx.servicediscovery.Record
 import io.vertx.servicediscovery.ServiceDiscovery
 import io.vertx.servicediscovery.types.HttpEndpoint
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 import paths.models.FlowController
 
 @Suppress("unused")
 abstract class AbstractHttpServiceVerticle : CoroutineVerticle() {
-    private val logger = LoggerFactory.getLogger("AbstractHttpServiceVerticle.FlowVerticle")
+    companion object {
+        private val logger = LoggerFactory.getLogger("AbstractHttpServiceVerticle.FlowVerticle")!!
+    }
+
     private val flowsController = FlowController()
 
-    val discovery: ServiceDiscovery by lazy {
+    private val discovery: ServiceDiscovery by lazy {
         ServiceDiscovery.create(vertx)
     }
     private var record: Record? = null
@@ -47,7 +51,7 @@ abstract class AbstractHttpServiceVerticle : CoroutineVerticle() {
 
         // Shutting the server AND waiting for the answer should prevents a
         //  java.net.BindException: Address already in use with gradle (but does not)
-        async {
+        launch(vertx.dispatcher()) {
             unpublishRecord()
             shutdownServer()
         }

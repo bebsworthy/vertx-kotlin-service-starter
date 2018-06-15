@@ -9,8 +9,9 @@ import io.vertx.junit5.VertxTestContext
 import io.vertx.kotlin.core.json.json
 import io.vertx.kotlin.core.json.obj
 import io.vertx.kotlin.coroutines.await
+import io.vertx.kotlin.coroutines.dispatcher
 import io.vertx.serviceproxy.ServiceProxyBuilder
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertNotNull
 import org.junit.jupiter.api.extension.ExtendWith
@@ -105,15 +106,13 @@ class SimpleVertxTest {
 
         val users = listOf(
                 Pair("dora", "dora"),
-                Pair("user", "user1234")
+                Pair("user", "user")
         )
-
 
         val list = ArrayList<Future<String>>()
 
         println("before users.stream()")
         users.map { user ->
-
             val f = Future.future<String>()
             list.add(f)
             println("Launching an new authentication for ${user.first}")
@@ -125,7 +124,7 @@ class SimpleVertxTest {
                     })
         }
 
-        async {
+        launch(vertx.dispatcher()) {
             println("Waiting for ${list.size} futures")
             CompositeFuture.all(list.toList()).await()
             println("Done waiting, test complete")

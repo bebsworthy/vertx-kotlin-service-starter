@@ -11,11 +11,14 @@ import io.vertx.kotlin.core.json.json
 import io.vertx.kotlin.core.json.obj
 import io.vertx.kotlin.ext.auth.KeyStoreOptions
 import io.vertx.kotlin.ext.jwt.JWTOptions
+import org.jetbrains.annotations.NotNull
 
 class AuthServiceImpl(vertx: Vertx, options: AuthServiceOption) : AuthService {
     private val logger = LoggerFactory.getLogger(this::class.qualifiedName)
     private val jwt: JWTAuth
-    private val jwtOptions = JWTOptions(expiresInSeconds = 60)
+    private val jwtOptions = JWTOptions(
+            expiresInMinutes = 60
+    )
 
     data class AuthServiceOption(val keystore: String,
                                  val password: String)
@@ -34,7 +37,7 @@ class AuthServiceImpl(vertx: Vertx, options: AuthServiceOption) : AuthService {
         jwt = JWTAuth.create(vertx, jwtAuthOptions)
     }
 
-    override fun authenticate(username: String, password: String, resultHandler: Handler<AsyncResult<String>>) {
+    override fun authenticate(@NotNull username: String, @NotNull password: String, @NotNull resultHandler: Handler<AsyncResult<String>>) {
 
         logger.info("Authenticate request for '$username'")
 

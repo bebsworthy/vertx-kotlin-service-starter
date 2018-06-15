@@ -15,7 +15,7 @@ class MainVerticle : AbstractVerticle() {
     private val logger = LoggerFactory.getLogger(this::class.qualifiedName)
 
     override fun start(startFuture: Future<Void>) {
-        // Here we use the same deployement parameters for all the verticles
+        // Here we use the same deployment parameters for all the verticles
         // and we pass them all the main config()
         val serverOpts = DeploymentOptions()
                 .setConfig(config())
@@ -32,13 +32,13 @@ class MainVerticle : AbstractVerticle() {
 
                 // <-- Add verticle here
 
-        ).setHandler({
+        ).setHandler {
             if (it.succeeded()) {
                 startFuture.complete()
             } else {
                 startFuture.fail(it.cause())
             }
-        })
+        }
     }
 
     override fun stop(stopFuture: Future<Void>?) {
@@ -52,15 +52,15 @@ class MainVerticle : AbstractVerticle() {
     private fun undeploy(name: String, opts: DeploymentOptions): Future<Any> {
         val done = Future.future<Any>()
 
-        vertx.deployVerticle(name, opts, {
+        vertx.deployVerticle(name, opts) {
             if (it.failed()) {
-                System.out.println("Failed to deploy verticle " + name)
+                System.out.println("Failed to deploy verticle $name")
                 done.fail(it.cause())
             } else {
-                System.out.println("Deployed verticle " + name)
+                System.out.println("Deployed verticle $name")
                 done.complete()
             }
-        })
+        }
 
         return done
     }
@@ -68,15 +68,15 @@ class MainVerticle : AbstractVerticle() {
     private fun deploy(name: String, opts: DeploymentOptions): Future<Any> {
         val done = Future.future<Any>()
 
-        vertx.deployVerticle(name, opts, {
+        vertx.deployVerticle(name, opts) {
             if (it.failed()) {
-                System.out.println("Failed to deploy verticle " + name)
+                System.out.println("Failed to deploy verticle $name")
                 done.fail(it.cause())
             } else {
-                System.out.println("Deployed verticle " + name)
+                System.out.println("Deployed verticle $name")
                 done.complete()
             }
-        })
+        }
 
         return done
     }

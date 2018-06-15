@@ -18,7 +18,7 @@ class SampleServiceBusVerticle : CoroutineVerticle() {
         SampleServiceImpl()
     }
 
-    var consumer: MessageConsumer<JsonObject>? = null
+    private var consumer: MessageConsumer<JsonObject>? = null
 
     override suspend fun start() {
 

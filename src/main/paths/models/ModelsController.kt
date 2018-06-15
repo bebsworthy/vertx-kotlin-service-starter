@@ -4,11 +4,7 @@ import java.time.LocalDateTime
 
 class FlowController {
 
-    fun getFlows(tags: List<String>, limit: Int): List<Flow> {
-        return MOCK_FLOWS
-    }
-
-    private val MOCK_METADATA by lazy {
+    private val mockMetadata by lazy {
         Metadata(
                 LocalDateTime.now(),
                 UserSummary(1, "Joe"),
@@ -18,10 +14,10 @@ class FlowController {
         )
     }
 
-    private val MOCK_FLOWS by lazy {
+    private val mockFlow by lazy {
         listOf(
-                Flow(MOCK_METADATA, 1, "Learn Python in 12 days", "video"),
-                Flow(MOCK_METADATA, 2, "Kotlin from 0 to 100", "blog")
+                Flow(mockMetadata, 1, "Learn Python in 12 days", "video"),
+                Flow(mockMetadata, 2, "Kotlin from 0 to 100", "blog")
         )
     }
 }

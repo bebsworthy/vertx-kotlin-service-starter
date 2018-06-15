@@ -2,8 +2,9 @@ package paths.services.sample
 
 import io.vertx.ext.web.Router
 import io.vertx.kotlin.coroutines.awaitResult
+import io.vertx.kotlin.coroutines.dispatcher
 import io.vertx.serviceproxy.ServiceProxyBuilder
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 import paths.services.AbstractHttpServiceVerticle
 
 /**
@@ -20,7 +21,7 @@ class SampleServiceBusConsumerVerticle : AbstractHttpServiceVerticle() {
         val router = Router.router(vertx)
 
         // Create a router that process the request using the service on the bus
-        router.get("/:message").handler({ ctx ->
+        router.get("/:message").handler { ctx ->
 
             // Obtain the handler to the service
             val builder = ServiceProxyBuilder(vertx).setAddress(SERVICE_ADDRESS)
@@ -29,7 +30,7 @@ class SampleServiceBusConsumerVerticle : AbstractHttpServiceVerticle() {
             // Get the message from the request
             val message = ctx.request().getParam("message") ?: ""
 
-            async {
+            launch(vertx.dispatcher()) {
                 try {
                     val result = awaitResult<String> { f ->
                         service.reverse(message, f)
@@ -49,7 +50,7 @@ class SampleServiceBusConsumerVerticle : AbstractHttpServiceVerticle() {
                     ctx.response().end("DELIAF")
                 }
             }
-        })
+        }
 
         // Start the server
         startServer(9090, router)

@@ -1,11 +1,11 @@
 
 plugins {
-    id "org.jetbrains.kotlin.jvm" version "1.2.41"
-    id "org.jetbrains.kotlin.kapt" version "1.2.41"
+    id "org.jetbrains.kotlin.jvm" version "1.2.50"
+    id "org.jetbrains.kotlin.kapt" version "1.2.50"
     id "java"
     id "application"
     id "com.github.johnrengelman.shadow" version "2.0.3"
-    id "com.diffplug.gradle.spotless" version "3.10.0"
+    id "io.gitlab.arturbosch.detekt" version "1.0.0.RC7-2"
 }
 
 repositories {
@@ -13,7 +13,7 @@ repositories {
     jcenter()
 }
 
-def kotlin_version      = "1.2.41"
+def kotlin_version      = "1.2.50"
 def vertx_version       = "3.5.1"
 def junit5_version      = "5.2.0"
 
@@ -95,19 +95,7 @@ shadowJar {
 }
 
 kapt {
-// None of any of this seem to work !
-//    processors="io.vertx.codegen.CodeGenProcessor"
-//    arguments {
-//        arg("codegen.output", "${project.projectDir}/src/generated")
-//        arg("outputDirectory", "${project.projectDir}/src/generated")
-//    }
-//    javacOptions {
-//
-//        option("-proc:only")
-//        option("-processor", "io.vertx.codegen.CodeGenProcessor")
-//        option("-Acodegen.output=${project.projectDir}/src/generated")
-//        option("-AoutputDirectory=${project.projectDir}/src/generated")
-//    }
+
 }
 
 compileJava {
@@ -116,12 +104,11 @@ compileJava {
 }
 
 sourceSets {
-    main.kotlin.srcDirs += 'src/main'
-    main.java.srcDirs += 'src/main'
-    main.java.srcDirs += 'src/generated'
+    main.kotlin.srcDirs = ['src/main']
+    main.java.srcDirs = ['src/main', 'src/generated']
 
-    test.kotlin.srcDirs += 'src/test'
-    test.java.srcDirs += 'src/test'
+    test.kotlin.srcDirs = ['src/test']
+    test.java.srcDirs = ['src/test']
 }
 
 test {
@@ -130,13 +117,14 @@ test {
     }
 }
 
-
-spotless {
-    kotlin {
-        ktlint() // optionally takes a version
-    }
-}
-
 task wrapper(type: Wrapper) {
     gradleVersion = '4.7'
+}
+
+detekt {
+    version = "1.0.0.RC7-2"
+    defaultProfile {
+        input = file("src/main")
+        filters = ".*/resources/.*,.*/build/.*"
+    }
 }

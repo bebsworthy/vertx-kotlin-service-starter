@@ -43,7 +43,7 @@ class SampleAsyncServiceTest {
     private fun deploy(vertx: Vertx, verticleName: String, options: DeploymentOptions): Future<Any> {
         val returnval = Future.future<Any>()
 
-        vertx.deployVerticle(verticleName, options, { res ->
+        vertx.deployVerticle(verticleName, options) { res ->
             if (res.succeeded()) {
                 println("Deployed ok: $verticleName")
                 returnval.complete()
@@ -52,7 +52,7 @@ class SampleAsyncServiceTest {
                 returnval.fail(res.cause())
             }
 
-        })
+        }
 
         return returnval
     }
@@ -91,8 +91,8 @@ class SampleAsyncServiceTest {
      */
     @Test
     fun `Test levelOne`(vertx: Vertx, testContext: VertxTestContext) {
-        var service = getService(vertx)
-        var data = "dora"
+        val service = getService(vertx)
+        val data = "dora"
         service.levelOne(data,
                 testContext.succeeding {
                     assertEquals(it, "ok")

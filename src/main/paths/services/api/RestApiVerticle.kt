@@ -1,15 +1,19 @@
 package paths.services.api
 
 import io.vertx.core.Handler
+import io.vertx.core.http.HttpMethod
 import io.vertx.core.logging.LoggerFactory
+import io.vertx.ext.web.Router
 import io.vertx.ext.web.RoutingContext
 import io.vertx.ext.web.api.RequestParameters
 import io.vertx.ext.web.api.contract.openapi3.OpenAPI3RouterFactory
+import io.vertx.ext.web.handler.CorsHandler
 import io.vertx.kotlin.core.json.json
 import io.vertx.kotlin.core.json.obj
 import io.vertx.kotlin.coroutines.awaitResult
+import io.vertx.kotlin.coroutines.dispatcher
 import io.vertx.serviceproxy.ServiceProxyBuilder
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 import paths.services.AbstractHttpServiceVerticle
 import paths.services.auth.AuthService
 import paths.services.auth.AuthVerticle
@@ -20,9 +24,34 @@ class RestApiVerticle : AbstractHttpServiceVerticle() {
         const val SERVICE_NAME = "API-service"
         const val CONFIG_PORT_KEY = "api.http.port"
         const val CONFIG_PORT_DEFAULT = 8080
+        val logger = LoggerFactory.getLogger(this::class.qualifiedName)!!
     }
 
-    private val logger = LoggerFactory.getLogger(this::class.qualifiedName)
+
+    /**
+     * CORS: List of allowed header
+     */
+    private val headers = setOf("x-requested-with",
+            "Access-Control-Allow-Origin",
+            "origin",
+            "Content-Type",
+            "accept",
+            "Authorization")
+
+    /**
+     * CORS: List of allowed HTTP methods
+     */
+    private val methods = setOf(HttpMethod.GET, HttpMethod.POST, HttpMethod.PUT, HttpMethod.HEAD, HttpMethod.PATCH, HttpMethod.OPTIONS, HttpMethod.DELETE, HttpMethod.TRACE)
+
+
+    /**
+     * CORS: The CORS handler instance
+     */
+    private val corsHandler = CorsHandler.create("*")
+            .allowedHeaders(headers)
+            .allowedMethods(methods)
+            //.allowCredentials(true)
+            .maxAgeSeconds(8600)!!
 
     override suspend fun start() {
         logger.info("Starting " + this::class.qualifiedName)
@@ -37,13 +66,27 @@ class RestApiVerticle : AbstractHttpServiceVerticle() {
         // What's our server port?
         val port = config.getInteger(CONFIG_PORT_KEY, CONFIG_PORT_DEFAULT)
 
+
+        // Get the router
+        val router = factory.router
+
+        // Add the CORS Handler
+        addCorsHandler(router)
+
         // Do I even understand that?
-        async {
-            startServer(port, factory.router)
+        launch(vertx.dispatcher()) {
+            startServer(port, router)
 
             // This happens after the startServer completes
             logger.info("Up and running")
         }
+    }
+
+    private fun addCorsHandler(router: Router) {
+        val route = router.route()!!
+        // Just to be sure the route execute before any other
+        route.order(-1000)
+        route.handler(corsHandler)
     }
 
     private fun authenticate(context: RoutingContext) {

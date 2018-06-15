@@ -1,6 +1,5 @@
 package paths.services.sample
 
-
 import io.vertx.codegen.annotations.ProxyClose
 import io.vertx.codegen.annotations.ProxyGen
 import io.vertx.codegen.annotations.VertxGen
@@ -10,13 +9,13 @@ import io.vertx.core.Handler
 import io.vertx.core.Vertx
 import io.vertx.core.json.JsonObject
 import io.vertx.kotlin.coroutines.awaitResult
+import io.vertx.kotlin.coroutines.dispatcher
 import io.vertx.serviceproxy.ServiceBinder
 import io.vertx.serviceproxy.ServiceProxyBuilder
-import kotlinx.coroutines.experimental.async
+import kotlinx.coroutines.experimental.launch
 import paths.services.AbstractBusServiceVerticle
 import paths.services.auth.AuthService
 import java.util.logging.Logger
-
 
 /**
  * Simple interface for the service
@@ -36,8 +35,11 @@ interface SampleAsyncService {
 /**
  * Implementation of the service
  */
-data class SampleAsyncServiceImpl(val vertx: Vertx) : SampleAsyncService {
-    private val log: Logger = Logger.getLogger(SampleAsyncServiceImpl::class.qualifiedName)
+class SampleAsyncServiceImpl(val vertx: Vertx) : SampleAsyncService {
+
+    companion object {
+        val log = Logger.getLogger(SampleAsyncServiceImpl::class.qualifiedName)!!
+    }
 
     /**
      * LevelOne function
@@ -76,7 +78,7 @@ data class SampleAsyncServiceImpl(val vertx: Vertx) : SampleAsyncService {
 
         val res = JsonObject()
 
-        async {
+        launch(vertx.dispatcher()) {
 
             var i = 3
             while (i > 0) {
@@ -116,7 +118,6 @@ class SampleAsyncServiceVerticle : AbstractBusServiceVerticle() {
     }
 
     private val log = Logger.getLogger(this::class.qualifiedName)
-
 
     override fun start(startFuture: Future<Void>) {
         log.info("Starting SampleAsyncServiceVerticle...")
