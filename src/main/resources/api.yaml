@@ -44,7 +44,7 @@ paths:
       operationId: getFlows
       parameters:
       - name: tags
-        in: rawQuery
+        in: rawSearch
         description: Tagd to filter the type of flow to return
         required: false
         schema:
@@ -55,7 +55,7 @@ paths:
         explode: false
 
       - name: limit
-        in: rawQuery
+        in: rawSearch
         description: How many item to return (default 20)
         required: false
         schema:

@@ -16,7 +16,7 @@ repositories {
 }
 
 def kotlin_version      = "1.2.50"
-def vertx_version       = "3.5.1"
+def vertx_version       = "3.5.2"
 def junit5_version      = "5.2.0"
 def hibernate_version   = "5.3.1.Final"
 def h2_version          = "1.4.197"
@@ -43,12 +43,13 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
 
-    compile "io.vertx:vertx-lang-kotlin:$vertx_version", noJRE
-    compile "io.vertx:vertx-lang-kotlin-coroutines:$vertx_version", noJRE
 
     // ----------------
     // Vertx
     // ----------------
+    compile "io.vertx:vertx-lang-kotlin:$vertx_version", noJRE
+    compile "io.vertx:vertx-lang-kotlin-coroutines:$vertx_version", noJRE
+
     compile "io.vertx:vertx-web:$vertx_version"
     compile "io.vertx:vertx-auth-jwt:$vertx_version"
     compile "io.vertx:vertx-web-api-contract:$vertx_version"

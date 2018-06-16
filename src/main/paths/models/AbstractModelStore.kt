@@ -1,31 +1,40 @@
 package paths.models
 
-import com.querydsl.jpa.impl.JPAQuery
 import com.querydsl.jpa.impl.JPAQueryFactory
 import org.hibernate.Session
 import org.kodein.di.Kodein
 import org.kodein.di.conf.global
 import org.kodein.di.generic.provider
-import kotlin.reflect.KClass
 
 
 abstract class AbstractModelStore<T, QT> {
 
+    /**
+     * Generic Id object
+     */
     data class Id(val id: java.io.Serializable?) {
         inline fun <reified T> value(): T? {
             id?.let { if (id is T) return id }
             return null
         }
     }
+
     /**
      * Session Factory provided by the Kodein Global Object
      */
-    val newSession : () -> Session by Kodein.global.provider()
+    val newSession: () -> Session by Kodein.global.provider()
 
     /**
      * Query base "from xxx" based on the name of the entity
      */
     abstract val queryBase: String
+
+    /**
+     * The QueryDSL auto-generated entity.
+     * If the bean was `User` the class will be `QUser`
+     * Due to type erasure we cannot `discover` it at runtime so it
+     * need to be specified by the concrete implementation of the store.
+     */
     abstract val entity: QT
 
     /**
@@ -38,13 +47,13 @@ abstract class AbstractModelStore<T, QT> {
     }
 
     /**
-     * Execute a raw JPA query of the form:
+     * Execute a raw HSQL with a free form `where` clause
      * ```
      *  from EntityName where $whereClause
      * ```
      * There is no validation and the query is assumed to return a list of 'T'
      */
-    fun rawQuery(whereClause: String? = null, parameters: Map<String, Any?>? = null): List<T> {
+    fun rawSearch(whereClause: String? = null, parameters: Map<String, Any?>? = null): List<T> {
         // Query
         var queryStr = queryBase
         whereClause?.let {
@@ -64,13 +73,16 @@ abstract class AbstractModelStore<T, QT> {
     }
 
     /**
-     * Calls `rawQuery` and return the first result of null
+     * Execute a raw HSQL with a free form `where` clause; returns only the first item or null
      */
-    fun rawQueryOne(whereClause: String? = null, parameters: Map<String, Any?>? = null) : T? {
-        val r = rawQuery(whereClause, parameters)
+    fun rawSearchOne(whereClause: String? = null, parameters: Map<String, Any?>? = null): T? {
+        val r = rawSearch(whereClause, parameters)
         return if (r.isNotEmpty()) r[0] else null
     }
 
+    /**
+     * Takes a handler and provides it with a `QueryDSL.QueryFactory` and the QueryDSL auto-generated entity.
+     */
     fun queryFactory(block: (query: JPAQueryFactory, entity: QT) -> List<T>?): List<T>? {
 
         // Query one using DSL
@@ -80,7 +92,6 @@ abstract class AbstractModelStore<T, QT> {
             val queryFactory = JPAQueryFactory(entityManager)
             return block(queryFactory, entity)
         }
-
     }
 
     /**
@@ -97,11 +108,19 @@ abstract class AbstractModelStore<T, QT> {
     /**
      * Save a list of object
      */
-    fun save(users: List<T>) : List<Id> {
+    fun save(users: List<T>): List<Id> {
         val result = mutableListOf<Id>()
         newSession().autocommit { session ->
             users.forEach { result.add(Id(session.save(it))) }
         }
         return result
     }
+
+    /**
+     * Todo:
+     *  - Validation
+     *  - Update
+     *  - Delete
+     *  - etc..
+     */
 }

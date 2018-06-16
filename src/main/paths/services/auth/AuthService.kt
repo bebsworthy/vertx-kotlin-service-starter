@@ -13,7 +13,9 @@ import io.vertx.core.json.JsonObject
 @VertxGen
 interface AuthService {
 
-    // Authenticate a user using a user name and password and return a JWT token
+    /**
+     * Authenticate a user using a user name and password and return a JWT token
+     */
     fun authenticate(username: String,
                      password: String,
                      resultHandler: Handler<AsyncResult<JsonObject>>)

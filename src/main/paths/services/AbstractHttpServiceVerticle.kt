@@ -18,7 +18,7 @@ import kotlinx.coroutines.experimental.launch
 @Suppress("unused")
 abstract class AbstractHttpServiceVerticle : CoroutineVerticle() {
     companion object {
-        private val logger = LoggerFactory.getLogger("AbstractHttpServiceVerticle.FlowVerticle")!!
+        private val logger = LoggerFactory.getLogger(this::class.qualifiedName)!!
     }
 
     private val discovery: ServiceDiscovery by lazy {

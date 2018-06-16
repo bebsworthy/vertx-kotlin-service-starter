@@ -1,18 +1,17 @@
 package paths.models
 
-
 import org.hibernate.annotations.GenericGenerator
 import javax.persistence.*
 
 @Entity
-@Table( name = "USERS" )
+@Table(name = "USERS")
 data class User(
         @Column(nullable = false)
         val name: String,
 
         @Id
-        @GeneratedValue(generator="increment")
-        @GenericGenerator(name="increment", strategy = "increment")
+        @GeneratedValue(generator = "increment")
+        @GenericGenerator(name = "increment", strategy = "increment")
         val id: Long = 0
 ) {
 

@@ -1,12 +1,13 @@
 package paths.services.models
 
-import com.querydsl.jpa.impl.JPAQueryFactory
-import org.junit.jupiter.api.*
-import org.junit.jupiter.api.Assertions.*
+import org.junit.jupiter.api.AfterAll
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.Test
 import org.kodein.di.Kodein
 import org.kodein.di.conf.global
 import paths.models.*
-
 
 
 /**
@@ -55,8 +56,8 @@ class SimpleTests {
          * Save a few in the database
          */
         val result = store.save(listOf(
-                    User("jane"),
-                    User("arthur") ))
+                User("jane"),
+                User("arthur")))
 
         assertEquals(result.size, 2)
         assertEquals(result[0].value<Long>(), 2L)
@@ -89,7 +90,7 @@ class SimpleTests {
         /**
          * Raw Hibernate SQL Query
          */
-        store.rawQuery().forEach { user ->
+        store.rawSearch().forEach { user ->
             println("User ${user.id} ${user.name}")
         }
 
@@ -145,7 +146,6 @@ class SimpleTests {
         }
 
     }
-
 
 
 }

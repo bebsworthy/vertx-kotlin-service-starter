@@ -12,7 +12,6 @@ import io.vertx.kotlin.core.json.json
 import io.vertx.kotlin.core.json.obj
 import io.vertx.kotlin.ext.auth.KeyStoreOptions
 import io.vertx.kotlin.ext.jwt.JWTOptions
-import org.jetbrains.annotations.NotNull
 
 class AuthServiceImpl(vertx: Vertx, options: AuthServiceOption) : AuthService {
     private val logger = LoggerFactory.getLogger(this::class.qualifiedName)
@@ -21,9 +20,15 @@ class AuthServiceImpl(vertx: Vertx, options: AuthServiceOption) : AuthService {
             expiresInMinutes = 60
     )
 
-    // A most probably unique identifier for this instance
+    /**
+     * A most probably unique identifier for this instance
+     * Used to print this instance id in the log
+     */
     private val instanceId = (Math.random() * 10000000000000000).toLong()
 
+    /**
+     * Option accepted by this service
+     */
     data class AuthServiceOption(val keystore: String,
                                  val password: String)
 
@@ -42,7 +47,7 @@ class AuthServiceImpl(vertx: Vertx, options: AuthServiceOption) : AuthService {
         jwt = JWTAuth.create(vertx, jwtAuthOptions)
     }
 
-    override fun authenticate(@NotNull username: String, @NotNull password: String, @NotNull resultHandler: Handler<AsyncResult<JsonObject>>) {
+    override fun authenticate(username: String, password: String, resultHandler: Handler<AsyncResult<JsonObject>>) {
 
         logger.info("[$instanceId] Authenticate request for '$username'")
 

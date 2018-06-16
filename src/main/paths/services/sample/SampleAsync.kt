@@ -8,6 +8,7 @@ import io.vertx.core.Future
 import io.vertx.core.Handler
 import io.vertx.core.Vertx
 import io.vertx.core.json.JsonObject
+import io.vertx.core.logging.LoggerFactory
 import io.vertx.kotlin.coroutines.awaitResult
 import io.vertx.kotlin.coroutines.dispatcher
 import io.vertx.serviceproxy.ServiceBinder
@@ -38,30 +39,30 @@ interface SampleAsyncService {
 class SampleAsyncServiceImpl(val vertx: Vertx) : SampleAsyncService {
 
     companion object {
-        val log = Logger.getLogger(SampleAsyncServiceImpl::class.qualifiedName)!!
+        private val logger = LoggerFactory.getLogger(this::class.qualifiedName)!!
     }
 
     /**
      * LevelOne function
      */
     override fun levelOne(data: String, resultHandler: Handler<AsyncResult<String>>) {
-        println("Begin levelOne $data")
+        logger.info("Begin levelOne $data")
 
         levelTwo("$data.one", Handler { f ->
 
             if (f.succeeded()) {
                 val r = f.result()
-                println("LevelOne: result from levelTwo: $r")
+                logger.info("LevelOne: result from levelTwo: $r")
                 // were done so we notify with a success
                 resultHandler.handle(Future.succeededFuture("ok"))
             } else {
-                println("LevelOne: levelTwo Failed")
+                logger.info("LevelOne: levelTwo Failed")
                 // It failed so we return a failure and propagate the reason
                 resultHandler.handle(Future.failedFuture(f.cause()))
             }
         })
 
-        println("End levelOne $data function")
+        logger.info("End levelOne $data function")
     }
 
     /**
@@ -71,7 +72,7 @@ class SampleAsyncServiceImpl(val vertx: Vertx) : SampleAsyncService {
     override fun levelTwo(data: String, resultHandler: Handler<AsyncResult<JsonObject>>) {
         // Here we will call the auth service three time sequentially
 
-        println("Begin levelTwo")
+        logger.info("Begin levelTwo")
 
         val builder = ServiceProxyBuilder(vertx).setAddress("auth-service")
         val service = builder.build(AuthService::class.java)
@@ -82,30 +83,30 @@ class SampleAsyncServiceImpl(val vertx: Vertx) : SampleAsyncService {
 
             var i = 3
             while (i > 0) {
-                println("levelTwo loop $i")
+                logger.info("levelTwo loop $i")
                 i--
                 try {
                     val reply = awaitResult<JsonObject> { f ->
                         service.authenticate("dora", "dora", f)
                     }
                     res.put("token$i", reply)
-                    println("result from authenticate $reply")
+                    logger.info("result from authenticate $reply")
                 } catch (e: Exception) {
-                    println("authenticate failed: $e")
+                    logger.info("authenticate failed: $e")
                 }
-                println("levelTwo end loop $i")
+                logger.info("levelTwo end loop $i")
             }
 
             // Now we can complete the function here because it's in a coroutine block (async)
             resultHandler.handle(Future.succeededFuture(res))
         }
 
-        println("End levelTwo function")
+        logger.info("End levelTwo function")
     }
 
     @Override
     override fun close() {
-        println("the close() override")
+        logger.info("the close() override")
     }
 }
 

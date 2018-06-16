@@ -12,7 +12,10 @@ import paths.services.sample.SampleServiceBusVerticle
 
 @Suppress("unused")
 class MainVerticle : AbstractVerticle() {
-    private val logger = LoggerFactory.getLogger(this::class.qualifiedName)
+
+    companion object {
+        private val logger = LoggerFactory.getLogger(this::class.qualifiedName)!!
+    }
 
     override fun start(startFuture: Future<Void>) {
         // Here we use the same deployment parameters for all the verticles
@@ -24,14 +27,11 @@ class MainVerticle : AbstractVerticle() {
 
         // Deploy all the verticles we need
         CompositeFuture.all(
-                deploy(AuthVerticle::class.qualifiedName ?: "", serverOpts),
-                deploy(RestApiVerticle::class.qualifiedName ?: "", serverOpts),
-                deploy(SampleServiceBusVerticle::class.qualifiedName ?: "", serverOpts),
-                deploy(SampleServiceBusConsumerVerticle::class.qualifiedName ?: "", serverOpts)
-                // deploy("io.vertx.ext.shell.ShellVerticle", serverOpts)
-
-                // <-- Add verticle here
-
+                deploy(AuthVerticle::class.qualifiedName!!, serverOpts),
+                deploy(RestApiVerticle::class.qualifiedName!!, serverOpts),
+                deploy(SampleServiceBusVerticle::class.qualifiedName!!, serverOpts),
+                deploy(SampleServiceBusConsumerVerticle::class.qualifiedName!!, serverOpts)
+                // <-- Add more verticle here
         ).setHandler {
             if (it.succeeded()) {
                 startFuture.complete()

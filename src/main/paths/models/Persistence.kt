@@ -2,11 +2,10 @@ package paths.models
 
 import org.hibernate.Session
 import org.hibernate.SessionFactory
-import org.hibernate.boot.registry.StandardServiceRegistryBuilder
 import org.hibernate.boot.MetadataSources
 import org.hibernate.boot.registry.StandardServiceRegistry
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder
 import org.kodein.di.Kodein
-import org.kodein.di.conf.global
 import org.kodein.di.generic.bind
 import org.kodein.di.generic.provider
 import javax.persistence.EntityTransaction

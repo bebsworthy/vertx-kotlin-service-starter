@@ -1,5 +1,6 @@
 package paths.services.sample
 
+import io.vertx.core.logging.LoggerFactory
 import io.vertx.ext.web.Router
 import io.vertx.kotlin.coroutines.awaitResult
 import io.vertx.kotlin.coroutines.dispatcher
@@ -12,8 +13,10 @@ import paths.services.AbstractHttpServiceVerticle
  */
 @Suppress("unused")
 class SampleServiceBusConsumerVerticle : AbstractHttpServiceVerticle() {
+
     companion object {
         const val SERVICE_ADDRESS = "sample-bus-service-address"
+        private val logger = LoggerFactory.getLogger(this::class.qualifiedName)!!
     }
 
     override suspend fun start() {
